@@ -1,11 +1,9 @@
 import streamlit as st
+from hungarian import hungarian
 st.set_page_config(
     page_title="Венгерский метод",
     page_icon="🧮",  # Эмодзи калькулятора
 )
-
-from hungarian import hungarian
-
 def parse_matrix(inputs, size):
     """
     Формирование квадратной матрицы из отдельных полей ввода с проверкой данных.
