@@ -2,6 +2,7 @@
 
 from typing import List, Tuple
 
+
 def hungarian(cost: List[List[float]], maximize: bool = False) -> Tuple[List[int], float]:
     """
     Решение задачи о назначениях методом Венгера.
@@ -11,19 +12,38 @@ def hungarian(cost: List[List[float]], maximize: bool = False) -> Tuple[List[int
         maximize: Если True — решаем задачу на максимум (по умолчанию минимум).
 
     Returns:
-        assignment: Список длины n, где assignment[i] = индекс столбца, 
+        assignment: Список длины n, где assignment[i] = индекс столбца,
                     назначенный строке i.
         total_cost: Общая стоимость (или прибыль, если maximize=True).
+
+    Raises:
+        ValueError: если матрица не является квадратной или содержит inf/NaN.
     """
+    # Проверка размеров
     n = len(cost)
+    if any(len(row) != n for row in cost):
+        raise ValueError("Матрица должна быть квадратной (n x n)")
+
+    # Проверка на inf/NaN
+    for i, row in enumerate(cost):
+        for j, val in enumerate(row):
+            if val != val or val in (float('inf'), float('-inf')):
+                raise ValueError(f"Матрица содержит недопустимое значение в элементе ({i}, {j})")
+
     # Копируем матрицу и при необходимости превращаем максимум в минимум
     C = [row[:] for row in cost]
     if maximize:
-        # для задачи на максимум: преобразуем pij -> M - pij
         M = max(max(row) for row in C)
+        # Если M бесконечность, дальше нет смысла
+        if M == float('inf') or M == float('-inf'):
+            raise ValueError("Невозможно решать задачу максимизации из-за бесконечных значений")
         for i in range(n):
             for j in range(n):
                 C[i][j] = M - C[i][j]
+
+    # Пустая задача
+    if n == 0:
+        return [], 0.0
 
     # Шаг 1: вычитаем минимумы по строкам
     for i in range(n):
@@ -37,7 +57,7 @@ def hungarian(cost: List[List[float]], maximize: bool = False) -> Tuple[List[int
         for i in range(n):
             C[i][j] -= mj
 
-    # Метки вершин и вспомогательные структуры
+    # Инициализация меток и вспомогательных массивов
     u = [0] * (n + 1)
     v = [0] * (n + 1)
     p = [0] * (n + 1)
@@ -71,7 +91,6 @@ def hungarian(cost: List[List[float]], maximize: bool = False) -> Tuple[List[int
             j0 = j1
             if p[j0] == 0:
                 break
-        # Восстановление пути
         while True:
             j1 = way[j0]
             p[j0] = p[j1]
@@ -79,7 +98,7 @@ def hungarian(cost: List[List[float]], maximize: bool = False) -> Tuple[List[int
             if j0 == 0:
                 break
 
-    # Составляем результат
+    # Составление задания
     assignment = [-1] * n
     for j in range(1, n + 1):
         if p[j] != 0:

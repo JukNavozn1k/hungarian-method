@@ -6,6 +6,7 @@ from scipy.optimize import linear_sum_assignment
 
 from hungarian import hungarian
 
+import math
 
 def reference_assignment(cost, maximize: bool = False):
     """Сравнение с scipy: linear_sum_assignment."""
@@ -56,3 +57,33 @@ def test_known_example_max():
     # Проверяем, что общая прибыль совпадает с максимальной
     _, ref_total = reference_assignment(cost, maximize=True)
     assert pytest.approx(total, rel=1e-7) == ref_total
+
+# 1. Пустая матрица
+
+def test_empty_matrix():
+    assign, total = hungarian([], maximize=False)
+    assert assign == []
+    assert total == 0.0
+
+# 2. Несквадратная матрица → ValueError
+
+def test_non_square_matrix():
+    with pytest.raises(ValueError):
+        hungarian([[1, 2], [3, 4], [5, 6]])
+
+# 3. Матрица с inf и NaN → ValueError
+
+def test_inf_nan_values():
+    mat_inf = [[1, 2], [3, float('inf')]]
+    mat_nanf = [[1, 2], [math.nan, 4]]
+    with pytest.raises(ValueError):
+        hungarian(mat_inf)
+    with pytest.raises(ValueError):
+        hungarian(mat_nanf)
+
+# 4. Максимизация с бесконечным максимумом → ValueError
+
+def test_max_with_infinite_max():
+    mat = [[1, 2], [3, float('inf')]]
+    with pytest.raises(ValueError):
+        hungarian(mat, maximize=True)
