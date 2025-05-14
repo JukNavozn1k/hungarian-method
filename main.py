@@ -33,11 +33,11 @@ with tab1:
     st.write("Введите элементы матрицы:")
     inputs = {}
     for i in range(rows):
-        cols_inputs = []
         cols_container = st.columns(cols)  # Create columns for each element in the row
         for j in range(cols):
             key = f"cell_{i}_{j}"
-            inputs[key] = cols_container[j].text_input(f"({i+1}, {j+1})", key=key, label_visibility="collapsed")
+            placeholder = f"Введите значение ({i+1}, {j+1})"
+            inputs[key] = cols_container[j].text_input(f"({i+1}, {j+1})", key=key, placeholder=placeholder, label_visibility="collapsed")
 
     # Выбор режима
     maximize = st.checkbox("Решать задачу на максимум", value=False)
