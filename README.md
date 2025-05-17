@@ -28,8 +28,8 @@
 
 ## 🌐 Демо
 
-Попробуйте приложение онлайн по адресу:  
-[https://juknavozn1k-hungarian-method-main-k12uon.streamlit.app/](https://juknavozn1k-hungarian-method-main-k12uon.streamlit.app/)
+Попробуйте приложение онлайн по [адресу.](https://hungarian-9ztzpgxcxjg8piepovxa47.streamlit.app/)  
+
 
 ## 🖥️ Интерфейс
 
